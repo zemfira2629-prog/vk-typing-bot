@@ -1,0 +1,34 @@
+const express = require("express");
+const axios = require("axios");
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+
+//vk1.a.CXvI5MQfeVxrvUjL6bojNcYXnArZb1ZcIAuML2jA-5KjVVDakBiPpVCEp2ykMU9d4nbQHcOuhhF4zrmm4JzG5ASw7-wbmfAzd246wrf5NjCfDRcL_tLzXsTd7fqS2HFImcD4CKvDlnohlCOkC8H36JomAo691KtaV_OrR6CVSDWJbA6bFbCNIBzBmcurQzKaXrXy3-gw5LxIKXuGaOCOTw
+const ACCESS_TOKEN = "ВАШ_ACCESS_TOKEN";
+
+app.get("/vk_typing", async (req, res) => {
+  const peerId = req.query.peer_id;
+  if (!peerId) {
+    return res.json({ error: "peer_id обязателен" });
+  }
+
+  try {
+    const response = await axios.get("https://api.vk.com/method/messages.setActivity", {
+      params: {
+        peer_id: peerId,
+        type: "typing", // можно заменить на "audiomessage"
+        access_token: ACCESS_TOKEN,
+        v: "5.131"
+      }
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
